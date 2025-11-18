@@ -1,0 +1,254 @@
+﻿@page "/"
+
+<PageTitle>Banko Cheater</PageTitle>
+
+<div class="container mt-4">
+    <h1 class="display-4 mb-4">Velkommen til Banko Cheater!</h1>
+    
+    <div class="row">
+        <div class="col-lg-10">
+            <section class="mb-5">
+                <h2>Hvad er Banko Cheater?</h2>
+                <p class="lead">
+                    Banko Cheater er et program designet til at give dig en fordel i spillet Banko ved at hjælpe dig med 
+                    at holde styr på flere bankoplader samtidigt og automatisk identificere vindende kombinationer.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h3>Hvor kommer pladerne fra?</h3>
+                <p>
+                    Bankopladerne laves på <strong><a href="https://mercantech.github.io/Banko/" target="_blank">https://mercantech.github.io/Banko/</a></strong>
+                </p>
+                <p>
+                    Her kan du lave så mange plader som du vil, men det kan hurtigt blive svært at holde styr på dem. 
+                    Derfor hjælper vores program dig med at:
+                </p>
+                <ul>
+                    <li>Holde styr på så mange plader som programmet kan håndtere</li>
+                    <li>Automatisk identificere når du har 1 række, 2 rækker eller fuld plade</li>
+                    <li>Gennemkende hvilken plade der har vundet baseret på talene</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h3>Sådan virker det</h3>
+                <h4>1. Indtast en plade i systemet</h4>
+                <p>
+                    Når du skriver et ID (f.eks. "Banko") ind på hjemmesiden, får du altid den samme plade. 
+                    Vores program kan huske dette ID sammen med tallene på pladen.
+                </p>
+                
+                <h4 class="mt-4">2. Systemet holder styr på nøglerne</h4>
+                <p>
+                    Hver plade gemmes med sit unikke ID. Hvis en plade viser tallene 12, 31, 40, 61 og 72, 
+                    kan programmet fortælle dig at det er "Banko"-pladen!
+                </p>
+                
+                <h4 class="mt-4">3. Automatisk vindingsdetektion</h4>
+                <p>
+                    Vi holder styr på tre typer vindere:
+                </p>
+                <ul>
+                    <li><strong>1. Række:</strong> En hel række er fuldt ud</li>
+                    <li><strong>2. Rækker:</strong> To rækker er fuldt ud</li>
+                    <li><strong>Fuld plade:</strong> Hele pladen er fyldt ud</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h3>Eksempel på en bankoplade</h3>
+                <div class="example-plate">
+                    <table>
+                        <tr>
+                            <td class="example-header">1-9</td>
+                            <td class="example-header">10-19</td>
+                            <td class="example-header">20-29</td>
+                            <td class="example-header">30-39</td>
+                            <td class="example-header">40-49</td>
+                            <td class="example-header">50-59</td>
+                            <td class="example-header">60-69</td>
+                            <td class="example-header">70-79</td>
+                            <td class="example-header">80-90</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td></td>
+                            <td>21</td>
+                            <td>31</td>
+                            <td></td>
+                            <td>52</td>
+                            <td></td>
+                            <td>71</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>15</td>
+                            <td></td>
+                            <td>35</td>
+                            <td>45</td>
+                            <td></td>
+                            <td>67</td>
+                            <td></td>
+                            <td>83</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td></td>
+                            <td>28</td>
+                            <td></td>
+                            <td>48</td>
+                            <td></td>
+                            <td>69</td>
+                            <td>75</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <div class="example-notes">
+                        <p>
+                            <span class="highlight">Række 1:</span> 5 tal sorteret i hver deres kolonne
+                        </p>
+                        <p>
+                            <span class="highlight">Kolonne 1:</span> Tallene 4 og 7 er sorteret stigende
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-5">
+                <h3>Regler for bankoplader</h3>
+                <ul>
+                    <li>Hver plade har 15 forskellige tal mellem 1 og 90</li>
+                    <li>Der er præcis 5 tal i hver række</li>
+                    <li>
+                        Tallene er fordelt i kolonner efter deres værdi:
+                        <ul>
+                            <li>Kolonne 1: Tal fra 1-9</li>
+                            <li>Kolonne 2: Tal fra 10-19</li>
+                            <li>Kolonne 3: Tal fra 20-29</li>
+                            <li>Kolonne 4: Tal fra 30-39</li>
+                            <li>Kolonne 5: Tal fra 40-49</li>
+                            <li>Kolonne 6: Tal fra 50-59</li>
+                            <li>Kolonne 7: Tal fra 60-69</li>
+                            <li>Kolonne 8: Tal fra 70-79</li>
+                            <li>Kolonne 9: Tal fra 80-90</li>
+                        </ul>
+                    </li>
+                    <li>Tallene i hver kolonne er sorteret fra lavest til højest</li>
+                    <li>Der skal være mindst ét tal i hver kolonne</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h3>Krav til aflevering</h3>
+                <p class="text-muted">
+                    <em>Som minimum skal programmet kunne tjekke 2 manuelt indtastede plader og kende forskel på hvilke 
+                    rækker der er fyldt og på hvilken plade det er.</em>
+                </p>
+            </section>
+
+            <div class="alert alert-info">
+                <h5 class="alert-heading">💡 Tips</h5>
+                <p class="mb-0">
+                    Start med at indtaste nogle få plader manuelt og se hvordan systemet holder styr på dem. 
+                    Prøv derefter at kalde nogle tal og se hvordan programmet automatisk opdaterer status på dine plader.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    section h2, section h3 {
+        color: #2c3e50;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    section h4 {
+        color: #495057;
+        font-weight: 600;
+        margin-top: 20px;
+    }
+    
+    section ul {
+        margin: 15px 0;
+        padding-left: 30px;
+    }
+    
+    section li {
+        margin: 8px 0;
+        line-height: 1.6;
+    }
+    
+    section ul ul {
+        margin: 5px 0;
+        padding-left: 25px;
+    }
+    
+    a {
+        color: #2c3e50;
+        text-decoration: none;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+    
+    .example-plate {
+        margin: 25px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .example-plate table {
+        width: 100%;
+        margin: 0 auto;
+        border-collapse: collapse;
+    }
+    
+    .example-plate td {
+        width: 11%;
+        height: 50px;
+        text-align: center;
+        border: 1px solid #2c3e50;
+        font-size: 16px;
+        background-color: white;
+    }
+    
+    .example-plate .example-header {
+        background-color: #2c3e50;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px;
+    }
+    
+    .example-notes {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .example-notes p {
+        margin: 5px 0;
+    }
+    
+    .highlight {
+        color: #2c3e50;
+        font-weight: bold;
+    }
+    
+    .alert-info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+    }
+    
+    .alert-info .alert-heading {
+        color: #0c5460;
+    }
+</style>

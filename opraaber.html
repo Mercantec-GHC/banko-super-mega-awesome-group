@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="./assets/favicon.png" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banko Opråber</title>
+    <script src="seedrandom.js"></script>
+    <script src="generator.js"></script>
+    <style>
+      .number-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 8px;
+        max-width: 800px;
+        margin: 20px auto;
+      }
+
+      .number-cell {
+        background-color: white;
+        border: 1px solid #2c3e50;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        cursor: default;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .called {
+        background-color: #2ecc71;
+        color: white;
+      }
+
+      .current {
+        background-color: #3498db;
+        color: white;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .controls {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      button {
+        height: 46px;
+        min-width: 120px;
+        padding: 0 20px;
+        background-color: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin: 0 10px;
+      }
+
+      button:hover {
+        background-color: #34495e;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      #currentNumber {
+        text-align: center;
+        font-size: 48px;
+        margin: 20px 0;
+        color: #2c3e50;
+        font-weight: 600;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .history {
+        position: fixed;
+        right: 20px;
+        top: 20px;
+        width: 200px;
+        max-height: 90vh;
+        overflow-y: auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .history h3 {
+        color: #2c3e50;
+        margin-top: 0;
+        margin-bottom: 15px;
+        text-align: center;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 10px;
+      }
+
+      #numberHistory {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+
+      .history-number {
+        background-color: #2ecc71;
+        color: white;
+        padding: 8px;
+        border-radius: 6px;
+        text-align: center;
+        font-weight: 600;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .back-button {
+        display: inline-block;
+        height: 46px;
+        min-width: 120px;
+        padding: 0 20px;
+        background-color: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin: 0 10px;
+        text-decoration: none;
+        line-height: 46px;
+      }
+
+      .back-button:hover {
+        background-color: #34495e;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .verify-dialog {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .verify-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .verify-content h3 {
+        color: #2c3e50;
+        margin-top: 0;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .input-group input,
+      .input-group select {
+        padding: 10px;
+        border: 2px solid #2c3e50;
+        border-radius: 6px;
+        font-size: 16px;
+      }
+
+      .input-group input {
+        flex: 1;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .verify-result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 6px;
+        text-align: center;
+        font-weight: 500;
+        display: none;
+      }
+
+      .verify-result.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .verify-result.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .cancel {
+        background-color: #6c757d;
+      }
+
+      .cancel:hover {
+        background-color: #5a6268;
+      }
+
+      .verify-plate {
+        margin: 20px 0;
+        display: none;
+      }
+
+      .verify-plate table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        table-layout: fixed;
+      }
+
+      .verify-plate td {
+        border: 1px solid #2c3e50;
+        padding: 15px;
+        text-align: center;
+        font-weight: 600;
+        width: 11.11%;
+        position: relative;
+      }
+
+      .verify-number {
+        width: 100%;
+        aspect-ratio: 1;
+        line-height: normal;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .verify-number.called {
+        background-color: #2ecc71;
+        color: white;
+      }
+
+      .verify-number.not-called {
+        background-color: #e74c3c;
+        color: white;
+      }
+
+      .verify-number.empty {
+        background-color: transparent;
+      }
+
+      .content-wrapper {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content-wrapper">
+      <div class="controls">
+        <a href="index.html" class="back-button">Tilbage til forsiden</a>
+        <button onclick="drawNumber()">Træk nyt nummer</button>
+        <button onclick="resetGame()">Nyt spil</button>
+        <button onclick="showVerifyDialog()">Verificér Banko</button>
+      </div>
+
+      <div id="currentNumber">Tryk på "Træk nyt nummer" for at starte</div>
+
+      <div class="number-grid" id="numberGrid"></div>
+    </div>
+
+    <div class="history">
+      <h3>Trukne numre:</h3>
+      <div id="numberHistory"></div>
+    </div>
+
+    <div id="verifyDialog" class="verify-dialog">
+      <div class="verify-content">
+        <h3>Verificér Banko</h3>
+        <div class="input-group">
+          <input type="text" id="playerId" placeholder="Indtast spiller-ID" />
+          <select id="winType">
+            <option value="row">1 række</option>
+            <option value="rows2">2 rækker</option>
+            <option value="full">Fuld plade</option>
+          </select>
+        </div>
+        <div id="verifyPlate" class="verify-plate"></div>
+        <div class="button-group">
+          <button onclick="verifyBanko()">Verificér</button>
+          <button onclick="closeVerifyDialog()" class="cancel">Luk</button>
+        </div>
+        <div id="verifyResult" class="verify-result"></div>
+      </div>
+    </div>
+
+    <script src="opraaber.js"></script>
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <link rel="stylesheet" href="stylesheet.css" />
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="./assets/favicon.png" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Automation Guide - MAGS Banko</title>
+  </head>
+  <body>
+    <h1>Automation med Selenium</h1>
+
+    <div class="rules-container">
+      <h3>Hvad er Selenium?</h3>
+      <p class="text-left">
+        Selenium er et værktøj til at automatisere webbrowsere. Det kan bruges
+        til at:
+      </p>
+      <ul>
+        <li>Simulere brugerinteraktioner på hjemmesider</li>
+        <li>Udfylde formularer automatisk</li>
+        <li>Klikke på knapper og links</li>
+        <li>Udtrække data fra hjemmesider</li>
+      </ul>
+
+      <div class="info-box">
+        <p>📚 Find mere detaljeret information og guides på:</p>
+        <a
+          href="https://mercantec.notion.site/h1-banko"
+          target="_blank"
+          class="info-link"
+          >Mercantec H1 Banko Guide</a
+        >
+      </div>
+
+      <div class="code-sections">
+        <div class="warning-box" id="mainWarning">
+          <p>
+            ⚠️ Prøv først selv at løse opgaven! Brug kun disse eksempler hvis du
+            sidder fast.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3>Udtræk af data fra bankoplader</h3>
+          <button
+            onclick="showWarningAndToggle('data-section')"
+            class="section-toggle"
+          >
+            Vis detaljer
+          </button>
+          <div id="data-section" class="section-content" style="display: none">
+            <p class="text-left">
+              Hver bankoplade er opbygget af table-elementer med unikke ID'er.
+              For eksempel:
+            </p>
+            <ul>
+              <li>Række 1: id="p11", med celler p111 til p119</li>
+              <li>Række 2: id="p12", med celler p121 til p129</li>
+              <li>Række 3: id="p13", med celler p131 til p139</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Kodeeksempler</h3>
+          <button
+            onclick="showWarningAndToggle('code-examples')"
+            class="section-toggle"
+          >
+            Vis eksempler
+          </button>
+          <div id="code-examples" class="section-content" style="display: none">
+            <h3>Metode 1: Udtræk via ID'er</h3>
+            <div class="code-example">
+              <pre><code>
+// Udtræk en specifik celle
+var cell = driver.FindElement(By.Id("p111")).Text;
+
+// Udtræk en hel række
+var row1 = Enumerable.Range(1, 9)
+    .Select(i => driver.FindElement(By.Id($"p11{i}")).Text)
+    .ToList();
+                        </code></pre>
+            </div>
+
+            <h3>Metode 2: Udtræk via Table Structure</h3>
+            <div class="code-example">
+              <pre><code>
+// Udtræk alle rækker
+var rows = driver.FindElements(By.CssSelector("tr[id^='p1']"));
+
+// Udtræk alle celler i en række
+foreach (var row in rows) {
+    var cells = row.FindElements(By.TagName("td"))
+        .Select(td => td.Text)
+        .Where(text => !string.IsNullOrEmpty(text))
+        .ToList();
+}
+                        </code></pre>
+            </div>
+
+            <h3>Metode 3: Komplet Plade Udtræk</h3>
+            <div class="code-example">
+              <pre><code>
+var bankoPlade = new int[3,9];
+for (int i = 1; i <= 3; i++) {
+    for (int j = 1; j <= 9; j++) {
+        var cellId = $"p1{i}{j}";
+        var cellText = driver.FindElement(By.Id(cellId)).Text;
+        if (!string.IsNullOrEmpty(cellText)) {
+            bankoPlade[i-1,j-1] = int.Parse(cellText);
+        }
+    }
+}
+                        </code></pre>
+            </div>
+
+            <h3>Datastruktur for bankoplader</h3>
+            <div class="code-example">
+              <pre><code>
+class BankoPlade {
+    public string ID { get; set; }
+    public int[,] Tal { get; set; }
+    public bool[] RækkeStatus { get; set; }
+
+    public BankoPlade(string id) {
+        ID = id;
+        Tal = new int[3,9];
+        RækkeStatus = new bool[3];
+    }
+}
+                        </code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Tips til automation</h3>
+          <button
+            onclick="showWarningAndToggle('tips-section')"
+            class="section-toggle"
+          >
+            Vis tips
+          </button>
+          <div id="tips-section" class="section-content" style="display: none">
+            <ul>
+              <li>Brug unikke ID'er til at identificere elementer</li>
+              <li>Implementér ventetider mellem handlinger</li>
+              <li>Gem data struktureret (fx i arrays eller lister)</li>
+              <li>Husk at lukke browseren efter brug</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation-links">
+        <a href="index.html" class="nav-button">Tilbage til spillet</a>
+        <a href="rules.html" class="nav-button">Se bankoregler</a>
+      </div>
+    </div>
+
+    <script>
+      let hasShownWarning = false;
+
+      function toggleAllCode() {
+        var codeSections = document.querySelector(".code-sections");
+        var button = document.querySelector(".toggle-button");
+        var warning = document.getElementById("mainWarning");
+
+        if (codeSections.style.display === "none") {
+          if (!hasShownWarning) {
+            hasShownWarning = true;
+            localStorage.setItem("hasShownWarning", "true");
+          }
+          codeSections.style.display = "block";
+          button.textContent = "Skjul kodeeksempler";
+        } else {
+          codeSections.style.display = "none";
+          button.textContent = "Vis kodeeksempler";
+        }
+      }
+
+      function toggleSection(sectionId) {
+        var section = document.getElementById(sectionId);
+        var button = section.previousElementSibling;
+        if (section.style.display === "none") {
+          section.style.display = "block";
+          button.textContent =
+            "Skjul " + button.textContent.toLowerCase().replace("vis ", "");
+        } else {
+          section.style.display = "none";
+          button.textContent =
+            "Vis " + button.textContent.toLowerCase().replace("skjul ", "");
+        }
+      }
+
+      function showWarningAndToggle(sectionId) {
+        if (!hasShownWarning) {
+          alert(
+            "⚠️ Prøv først selv at løse opgaven! Brug kun disse eksempler hvis du sidder fast."
+          );
+          hasShownWarning = true;
+          localStorage.setItem("hasShownWarning", "true");
+          toggleSection(sectionId);
+        } else {
+          toggleSection(sectionId);
+        }
+      }
+
+      window.onload = function () {
+        hasShownWarning = localStorage.getItem("hasShownWarning") === "true";
+        if (hasShownWarning) {
+          document.getElementById("mainWarning").style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>

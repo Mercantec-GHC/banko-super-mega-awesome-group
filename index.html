@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<script src="seedrandom.js" charset="utf-8"></script>
+<script src="generator.js" charset="utf-8"></script>
+  <head>
+    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="icon" type="image/png" href="./assets/favicon.png" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banko med MAGS</title>
+  </head>
+  <body>
+    <h1> Banko med MAGS </h1>
+    
+
+
+    <div class="links">
+      <a href="https://github.com/mercantech/banko" target="_blank">GitHub Repository</a>
+      <a href="https://mercantec.notion.site/h1-banko" target="_blank">Opgavebeskrivelse</a>
+    </div>
+    <br>
+    <br>
+
+    <div id="knapper">
+    <input name="tekstboks" id="tekstboks" size=40 placeholder="skriv dit navn her"></input>
+    <button id="knap" type="button" name="button" onclick="Math.seedrandom(tekstboks.value),update_plates()">Generer plader</button>
+    <button id="randomKnap" type="button" name="button" onclick="generateRandomName()">Tilfældigt id</button>
+    </div>
+    <h2>Banko</h2>
+    <table id="p1">
+      <tr id="p11">
+        <td onclick="myFunction(this)" style="background-color:white" id="p111"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p112"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p113"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p114"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p115"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p116"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p117"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p118"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p119"></td>
+      </tr>
+      <tr id="p12">
+        <td onclick="myFunction(this)" style="background-color:white" id="p121"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p122"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p123"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p124"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p125"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p126"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p127"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p128"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p129"></td>
+      </tr>
+      <tr id="p13">
+        <td onclick="myFunction(this)" style="background-color:white" id="p131"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p132"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p133"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p134"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p135"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p136"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p137"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p138"></td>
+        <td onclick="myFunction(this)" style="background-color:white" id="p139"></td>
+      </tr>
+    </table>
+    <br>
+    <br>
+    <div id="instructions">
+      <p>Skriv et navn i feltet og klik på "Generer plader" for at få din unikke bankoplade.</p>
+      <p>Klik på tallene for at markere dem når de bliver råbt op.</p>
+      <p>
+        <a href="rules.html" class="rules-link">Se bankoregler</a> | 
+        <a href="automation.html" class="rules-link">Guide til scraping</a> |
+        <a href="opraaber.html" class="rules-link">Opråber</a>
+      </p>
+    </div>
+      </body>
+</html>
