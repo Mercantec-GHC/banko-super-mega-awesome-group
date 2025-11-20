@@ -112,7 +112,7 @@ class Program
         };
         manager.AddCard(new BankoCard("Martin1", card2));
 
-        Console.WriteLine("🎯 Indtast trukne tal. Skriv 'stop' for at afslutte.\n");
+        Console.WriteLine("Enter the numbers. Write 'stop' for exiting the terminal.\n");
 
         while (true)
         {
@@ -129,7 +129,7 @@ class Program
             }
             else
             {
-                Console.WriteLine("Ugyldigt input - skriv et tal!");
+                Console.WriteLine("Invalid input - Please enter a number!");
             }
         }
     }
