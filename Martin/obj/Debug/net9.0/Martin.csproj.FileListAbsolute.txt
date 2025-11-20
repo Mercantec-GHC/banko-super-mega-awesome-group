@@ -1,0 +1,15 @@
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\bin\Debug\net9.0\Martin.exe
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\bin\Debug\net9.0\Martin.deps.json
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\bin\Debug\net9.0\Martin.runtimeconfig.json
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\bin\Debug\net9.0\Martin.dll
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\bin\Debug\net9.0\Martin.pdb
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\Martin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\Martin.AssemblyInfoInputs.cache
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\Martin.AssemblyInfo.cs
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\Martin.csproj.CoreCompileInputs.cache
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\Martin.sourcelink.json
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\Martin.dll
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\refint\Martin.dll
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\Martin.pdb
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\Martin.genruntimeconfig.cache
+C:\Users\36861\source\repos\Mercantec-GHC\banko-super-mega-awesome-group\Martin\obj\Debug\net9.0\ref\Martin.dll

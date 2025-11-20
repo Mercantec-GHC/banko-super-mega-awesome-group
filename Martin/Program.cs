@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-public class BankoCard
+﻿public class BankoCard
 {
     public string CardId { get; set; }
     public int[,] Numbers { get; set; } = new int[3, 9];
     public bool[,] Marked { get; set; } = new bool[3, 9];
 
-    // Holder styr på om denne plade allerede HAR meldt 1 række, 2 rækker osv.
+
     public int HighestAnnounced { get; set; } = 0;
 
     public BankoCard(string cardId, int[,] numbers)
