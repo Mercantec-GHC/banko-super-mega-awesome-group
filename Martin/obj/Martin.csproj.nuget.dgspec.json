@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\36861\\source\\repos\\Mercantec-GHC\\banko-super-mega-awesome-group\\Martin\\Martin.csproj": {}
+    "C:\\Users\\mhill\\Source\\Repos\\banko-super-mega-awesome-group\\Martin\\Martin.csproj": {}
   },
   "projects": {
-    "C:\\Users\\36861\\source\\repos\\Mercantec-GHC\\banko-super-mega-awesome-group\\Martin\\Martin.csproj": {
+    "C:\\Users\\mhill\\Source\\Repos\\banko-super-mega-awesome-group\\Martin\\Martin.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\36861\\source\\repos\\Mercantec-GHC\\banko-super-mega-awesome-group\\Martin\\Martin.csproj",
+        "projectUniqueName": "C:\\Users\\mhill\\Source\\Repos\\banko-super-mega-awesome-group\\Martin\\Martin.csproj",
         "projectName": "Martin",
-        "projectPath": "C:\\Users\\36861\\source\\repos\\Mercantec-GHC\\banko-super-mega-awesome-group\\Martin\\Martin.csproj",
-        "packagesPath": "C:\\Users\\36861\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\36861\\source\\repos\\Mercantec-GHC\\banko-super-mega-awesome-group\\Martin\\obj\\",
+        "projectPath": "C:\\Users\\mhill\\Source\\Repos\\banko-super-mega-awesome-group\\Martin\\Martin.csproj",
+        "packagesPath": "C:\\Users\\mhill\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mhill\\Source\\Repos\\banko-super-mega-awesome-group\\Martin\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\36861\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mhill\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -27,8 +27,7 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://pkgs.dev.azure.com/GfProductionIT/_packaging/PIT-Components/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {

@@ -78,7 +78,7 @@ public class BankoManager
             }
             if (rows == 3 && card.HighestAnnounced < 3)
             {
-                Console.WriteLine($"FULL PLATE ON: {card.CardId} 🏆");
+                Console.WriteLine($"FULL PLATE ON: {card.CardId}");
                 card.HighestAnnounced = 3;
             }
         }
@@ -108,7 +108,7 @@ class Program
         };
         manager.AddCard(new BankoCard("Martin1", card2));
 
-        Console.WriteLine("🎯 Indtast trukne tal. Skriv 'stop' for at afslutte.\n");
+        Console.WriteLine("Enter a number. Write 'stop' if you want to exit.\n");
 
         while (true)
         {
@@ -125,7 +125,7 @@ class Program
             }
             else
             {
-                Console.WriteLine("Ugyldigt input - skriv et tal!");
+                Console.WriteLine("Invalid Input - write a number!");
             }
         }
     }
