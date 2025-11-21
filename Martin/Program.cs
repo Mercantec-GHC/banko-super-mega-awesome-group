@@ -1,132 +1,170 @@
-﻿public class BankoCard
+﻿using Npgsql;
+public class BankoPlade
 {
-    public string CardId { get; set; }
-    public int[,] Numbers { get; set; } = new int[3, 9];
-    public bool[,] Marked { get; set; } = new bool[3, 9];
+    public string Id { get; set; }
+    public List<int> Række1 { get; set; }
+    public List<int> Række2 { get; set; }
+    public List<int> Række3 { get; set; }
 
-
-    public int HighestAnnounced { get; set; } = 0;
-
-    public BankoCard(string cardId, int[,] numbers)
+    public BankoPlade(string id, List<int> r1, List<int> r2, List<int> r3)
     {
-        CardId = cardId;
-        Numbers = numbers;
+        Id = id;
+        Række1 = r1;
+        Række2 = r2;
+        Række3 = r3;
     }
 
-    public void MarkNumber(int number)
+    public void MarkerTal(int tal)
     {
-        for (int row = 0; row < 3; row++)
+        if (Række1.Contains(tal)) Række1.Remove(tal);
+        if (Række2.Contains(tal)) Række2.Remove(tal);
+        if (Række3.Contains(tal)) Række3.Remove(tal);
+    }
+
+    public int AntalFuldeRækker()
+    {
+        int fulde = 0;
+        if (Række1.Count == 0) fulde++;
+        if (Række2.Count == 0) fulde++;
+        if (Række3.Count == 0) fulde++;
+        return fulde;
+    }
+
+    public string Status()
+    {
+        int fulde = AntalFuldeRækker();
+        return fulde switch
         {
-            for (int col = 0; col < 9; col++)
-            {
-                if (Numbers[row, col] == number)
-                    Marked[row, col] = true;
-            }
-        }
-    }
-
-    public int CompletedRows()
-    {
-        int count = 0;
-        for (int row = 0; row < 3; row++)
-        {
-            int markedInRow = 0;
-            for (int col = 0; col < 9; col++)
-            {
-                if (Numbers[row, col] != 0 && Marked[row, col])
-                    markedInRow++;
-            }
-            if (markedInRow == 5)
-                count++;
-        }
-        return count;
-    }
-
-    public bool IsFullHouse() => CompletedRows() == 3;
-}
-
-public class BankoManager
-{
-    public List<BankoCard> Cards { get; set; } = new List<BankoCard>();
-
-    public void AddCard(BankoCard card)
-    {
-        Cards.Add(card);
-    }
-
-    public void MarkNumberOnAll(int number)
-    {
-        foreach (var card in Cards)
-            card.MarkNumber(number);
-    }
-
-    public void CheckForWinners()
-    {
-        foreach (var card in Cards)
-        {
-            int rows = card.CompletedRows();
-
-            if (rows >= 1 && card.HighestAnnounced < 1)
-            {
-                Console.WriteLine($"1 row on plate : {card.CardId}");
-                card.HighestAnnounced = 1;
-            }
-            if (rows >= 2 && card.HighestAnnounced < 2)
-            {
-                Console.WriteLine($"2 rows on plate: {card.CardId}");
-                card.HighestAnnounced = 2;
-            }
-            if (rows == 3 && card.HighestAnnounced < 3)
-            {
-                Console.WriteLine($"FULL PLATE ON: {card.CardId}");
-                card.HighestAnnounced = 3;
-            }
-        }
-    }
-}
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        BankoManager manager = new BankoManager();
-
-        // Her kan du tilføje flere plader
-        int[,] card1 =
-        {
-            { 3, 0, 0, 0, 40, 0, 63, 72, 80 },
-            { 0, 12, 0, 33, 44, 55, 0, 73, 0 },
-            { 0, 14, 27, 37, 0, 0, 69, 78, 0 }
+            0 => "Ingen rækker fulde",
+            1 => "1 række fuld!",
+            2 => "2 rækker fulde!!",
+            3 => "BANKO! Fuld plade!!!",
+            _ => "Ukendt"
         };
-        manager.AddCard(new BankoCard("Martin", card1));
+    }
 
-        int[,] card2 =
+
+    public class BankoRepository
+    {
+        private readonly string _connectionString;
+
+        public BankoRepository(string connectionString)
         {
-            { 1, 0, 22, 0, 45, 0, 60, 0, 81 },
-            { 0, 17, 0, 36, 0, 55, 0, 70, 0 },
-            { 9, 0, 28, 0, 49, 0, 66, 0, 88 }
-        };
-        manager.AddCard(new BankoCard("Martin1", card2));
+            _connectionString = connectionString;
+        }
 
-        Console.WriteLine("Enter a number. Write 'stop' if you want to exit.\n");
-
-        while (true)
+        public void TilføjPlade(BankoPlade plade)
         {
-            Console.Write("Number: ");
-            string input = Console.ReadLine();
+            using var conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
 
-            if (input.ToLower() == "stop")
-                break;
+            using var cmd = new NpgsqlCommand(
+                "INSERT INTO bankoplader (plade_id, række1, række2, række3) VALUES (@id, @r1, @r2, @r3)", conn);
+            cmd.Parameters.AddWithValue("id", plade.Id);
+            cmd.Parameters.AddWithValue("r1", plade.Række1.ToArray());
+            cmd.Parameters.AddWithValue("r2", plade.Række2.ToArray());
+            cmd.Parameters.AddWithValue("r3", plade.Række3.ToArray());
+            cmd.ExecuteNonQuery();
+        }
 
-            if (int.TryParse(input, out int number))
+        public List<BankoPlade> HentAllePlader()
+        {
+            var result = new List<BankoPlade>();
+            using var conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            using var cmd = new NpgsqlCommand("SELECT plade_id, række1, række2, række3 FROM bankoplader", conn);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                manager.MarkNumberOnAll(number);
-                manager.CheckForWinners();
+                string id = reader.GetString(0);
+                var r1 = (int[])reader.GetValue(1);
+                var r2 = (int[])reader.GetValue(2);
+                var r3 = (int[])reader.GetValue(3);
+                result.Add(new BankoPlade(id, r1.ToList(), r2.ToList(), r3.ToList()));
             }
-            else
+            return result;
+        }
+    }
+    class Program
+    {
+        static string connStr = Environment.GetEnvironmentVariable("DB_CONN")
+              ?? "Host=localhost;Username=postgres;Password=secret;Database=neondb;SSL Mode=Require";
+        static BankoRepository repo = new BankoRepository(connStr);
+        static List<BankoPlade> aktivePlader = new List<BankoPlade>();
+
+        static void Main()
+        {
+            while (true)
             {
-                Console.WriteLine("Invalid Input - write a number!");
+                Console.Clear();
+                Console.WriteLine("=== BANKO MENU ===");
+                Console.WriteLine("1. Tilføj plade");
+                Console.WriteLine("2. Hent plader fra DB");
+                Console.WriteLine("3. Marker tal");
+                Console.WriteLine("4. Vis status");
+                Console.WriteLine("0. Afslut");
+                Console.Write("Vælg: ");
+                var valg = Console.ReadLine();
+
+                switch (valg)
+                {
+                    case "1": TilføjPlade(); break;
+                    case "2": HentPlader(); break;
+                    case "3": MarkerTal(); break;
+                    case "4": VisStatus(); break;
+                    case "0": return;
+                }
             }
+        }
+
+        static void TilføjPlade()
+        {
+            Console.Write("Indtast plade ID: ");
+            string id = Console.ReadLine();
+
+            Console.WriteLine("Indtast 5 tal for række 1 (kommasepareret): ");
+            var r1 = Console.ReadLine().Split(',').Select(int.Parse).ToList();
+
+            Console.WriteLine("Indtast 5 tal for række 2: ");
+            var r2 = Console.ReadLine().Split(',').Select(int.Parse).ToList();
+
+            Console.WriteLine("Indtast 5 tal for række 3: ");
+            var r3 = Console.ReadLine().Split(',').Select(int.Parse).ToList();
+
+            var plade = new BankoPlade(id, r1, r2, r3);
+            repo.TilføjPlade(plade);
+            aktivePlader.Add(plade);
+            Console.WriteLine("Plade tilføjet!");
+            Console.ReadKey();
+        }
+
+        static void HentPlader()
+        {
+            aktivePlader = repo.HentAllePlader();
+            Console.WriteLine($"Hentede {aktivePlader.Count} plader fra DB.");
+            Console.ReadKey();
+        }
+
+        static void MarkerTal()
+        {
+            Console.Write("Indtast tal der er råbt op: ");
+            int tal = int.Parse(Console.ReadLine());
+            foreach (var plade in aktivePlader)
+            {
+                plade.MarkerTal(tal);
+            }
+            Console.WriteLine("Tal markeret!");
+            Console.ReadKey();
+        }
+
+        static void VisStatus()
+        {
+            foreach (var plade in aktivePlader)
+            {
+                Console.WriteLine($"{plade.Id}: {plade.Status()}");
+            }
+            Console.ReadKey();
         }
     }
 }

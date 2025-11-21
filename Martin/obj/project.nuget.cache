@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "L8nEVuhvon8=",
+  "dgSpecHash": "Qx2vXs7PC5g=",
   "success": true,
-  "projectFilePath": "C:\\Users\\mhill\\Source\\Repos\\banko-super-mega-awesome-group\\Martin\\Martin.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\36861\\Source\\Repos\\banko-super-mega-awesome-group\\Martin\\Martin.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\36861\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.2\\microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\36861\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\36861\\.nuget\\packages\\npgsql\\9.0.4\\npgsql.9.0.4.nupkg.sha512"
+  ],
   "logs": []
 }
