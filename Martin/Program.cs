@@ -1,32 +1,32 @@
 ﻿using Npgsql;
-public class BankoPlade
+public class BankoPlate
 {
     public string Id { get; set; }
-    public List<int> Række1 { get; set; }
-    public List<int> Række2 { get; set; }
-    public List<int> Række3 { get; set; }
+    public List<int> Row1 { get; set; }
+    public List<int> Row2 { get; set; }
+    public List<int> Row3 { get; set; }
 
-    public BankoPlade(string id, List<int> r1, List<int> r2, List<int> r3)
+    public BankoPlate(string id, List<int> r1, List<int> r2, List<int> r3)
     {
         Id = id;
-        Række1 = r1;
-        Række2 = r2;
-        Række3 = r3;
+        Row1 = r1;
+        Row2 = r2;
+        Row3 = r3;
     }
 
-    public void MarkerTal(int tal)
+    public void MarkerTal(int number)
     {
-        if (Række1.Contains(tal)) Række1.Remove(tal);
-        if (Række2.Contains(tal)) Række2.Remove(tal);
-        if (Række3.Contains(tal)) Række3.Remove(tal);
+        if (Row1.Contains(number)) Row1.Remove(number);
+        if (Row2.Contains(number)) Row2.Remove(number);
+        if (Row3.Contains(number)) Row3.Remove(number);
     }
 
     public int AntalFuldeRækker()
     {
         int fulde = 0;
-        if (Række1.Count == 0) fulde++;
-        if (Række2.Count == 0) fulde++;
-        if (Række3.Count == 0) fulde++;
+        if (Row1.Count == 0) fulde++;
+        if (Row2.Count == 0) fulde++;
+        if (Row3.Count == 0) fulde++;
         return fulde;
     }
 
@@ -43,7 +43,6 @@ public class BankoPlade
         };
     }
 
-
     public class BankoRepository
     {
         private readonly string _connectionString;
@@ -53,27 +52,58 @@ public class BankoPlade
             _connectionString = connectionString;
         }
 
-        public void TilføjPlade(BankoPlade plade)
+        /// <summary>
+        /// Opretter tabellen, hvis den ikke findes
+        /// </summary>
+        public async Task EnsureTableExistsAsync()
+        {
+            const string sql = @"
+            CREATE TABLE IF NOT EXISTS bankoplader (
+                plade_id TEXT PRIMARY KEY,
+                raekke1 INT[],
+                raekke2 INT[],
+                raekke3 INT[]
+            );";
+
+            try
+            {
+                await using var connection = new NpgsqlConnection(_connectionString);
+                await connection.OpenAsync();
+
+                await using var command = new NpgsqlCommand(sql, connection);
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (PostgresException pgEx)
+            {
+                throw new Exception($"PostgreSQL fejl ved oprettelse af tabel: {pgEx.Message}", pgEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Fejl ved oprettelse af tabel: {ex.Message}", ex);
+            }
+        }
+
+        public void TilføjPlade(BankoPlate plade)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
             using var cmd = new NpgsqlCommand(
-                "INSERT INTO bankoplader (plade_id, række1, række2, række3) VALUES (@id, @r1, @r2, @r3)", conn);
+                "INSERT INTO bankoplader (plade_id, raekke1, raekke2, raekke3) VALUES (@id, @r1, @r2, @r3)", conn);
             cmd.Parameters.AddWithValue("id", plade.Id);
-            cmd.Parameters.AddWithValue("r1", plade.Række1.ToArray());
-            cmd.Parameters.AddWithValue("r2", plade.Række2.ToArray());
-            cmd.Parameters.AddWithValue("r3", plade.Række3.ToArray());
+            cmd.Parameters.AddWithValue("r1", plade.Row1.ToArray());
+            cmd.Parameters.AddWithValue("r2", plade.Row2.ToArray());
+            cmd.Parameters.AddWithValue("r3", plade.Row3.ToArray());
             cmd.ExecuteNonQuery();
         }
 
-        public List<BankoPlade> HentAllePlader()
+        public List<BankoPlate> HentAllePlader()
         {
-            var result = new List<BankoPlade>();
+            var result = new List<BankoPlate>();
             using var conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            using var cmd = new NpgsqlCommand("SELECT plade_id, række1, række2, række3 FROM bankoplader", conn);
+            using var cmd = new NpgsqlCommand("SELECT plade_id, raekke1, raekke2, raekke3 FROM bankoplader", conn);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -81,20 +111,22 @@ public class BankoPlade
                 var r1 = (int[])reader.GetValue(1);
                 var r2 = (int[])reader.GetValue(2);
                 var r3 = (int[])reader.GetValue(3);
-                result.Add(new BankoPlade(id, r1.ToList(), r2.ToList(), r3.ToList()));
+                result.Add(new BankoPlate(id, r1.ToList(), r2.ToList(), r3.ToList()));
             }
             return result;
         }
     }
     class Program
     {
-        static string connStr = Environment.GetEnvironmentVariable("DB_CONN")
-              ?? "Host=localhost;Username=postgres;Password=secret;Database=neondb;SSL Mode=Require";
+        static string connStr = Environment.GetEnvironmentVariable("neondb")
+              ?? "Host=ep-jolly-thunder-a9dhgpfe-pooler.gwc.azure.neon.tech; Database=neondb; Username=neondb_owner; Password=npg_gdb7iuU4VPsO; SSL Mode=VerifyFull; Channel Binding=Require;";
         static BankoRepository repo = new BankoRepository(connStr);
-        static List<BankoPlade> aktivePlader = new List<BankoPlade>();
+        static List<BankoPlate> aktivePlader = new List<BankoPlate>();
 
         static void Main()
         {
+            repo.EnsureTableExistsAsync().GetAwaiter().GetResult();
+
             while (true)
             {
                 Console.Clear();
@@ -109,16 +141,16 @@ public class BankoPlade
 
                 switch (valg)
                 {
-                    case "1": TilføjPlade(); break;
-                    case "2": HentPlader(); break;
+                    case "1": AddPlate(); break;
+                    case "2": GetPlates(); break;
                     case "3": MarkerTal(); break;
-                    case "4": VisStatus(); break;
+                    case "4": ShowStatus(); break;
                     case "0": return;
                 }
             }
         }
 
-        static void TilføjPlade()
+        static void AddPlate()
         {
             Console.Write("Indtast plade ID: ");
             string id = Console.ReadLine();
@@ -132,14 +164,14 @@ public class BankoPlade
             Console.WriteLine("Indtast 5 tal for række 3: ");
             var r3 = Console.ReadLine().Split(',').Select(int.Parse).ToList();
 
-            var plade = new BankoPlade(id, r1, r2, r3);
+            var plade = new BankoPlate(id, r1, r2, r3);
             repo.TilføjPlade(plade);
             aktivePlader.Add(plade);
             Console.WriteLine("Plade tilføjet!");
             Console.ReadKey();
         }
 
-        static void HentPlader()
+        static void GetPlates()
         {
             aktivePlader = repo.HentAllePlader();
             Console.WriteLine($"Hentede {aktivePlader.Count} plader fra DB.");
@@ -148,17 +180,17 @@ public class BankoPlade
 
         static void MarkerTal()
         {
-            Console.Write("Indtast tal der er råbt op: ");
-            int tal = int.Parse(Console.ReadLine());
+            Console.Write("Indtast tal der er råbt op: "); //´Der skal laves en try/catch her.
+            int number = int.Parse(Console.ReadLine());
             foreach (var plade in aktivePlader)
             {
-                plade.MarkerTal(tal);
+                plade.MarkerTal(number);
             }
             Console.WriteLine("Tal markeret!");
             Console.ReadKey();
         }
 
-        static void VisStatus()
+        static void ShowStatus()
         {
             foreach (var plade in aktivePlader)
             {
