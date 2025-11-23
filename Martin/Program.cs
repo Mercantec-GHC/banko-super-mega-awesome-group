@@ -15,26 +15,26 @@ public class BankoPlate
         Row3 = r3;
     }
 
-    public void MarkerTal(int number)
+    public void CountNumbers(int number)
     {
         if (Row1.Contains(number)) Row1.Remove(number);
         if (Row2.Contains(number)) Row2.Remove(number);
         if (Row3.Contains(number)) Row3.Remove(number);
     }
 
-    public int AntalFuldeRækker()
+    public int TotalFullRow()
     {
-        int fulde = 0;
-        if (Row1.Count == 0) fulde++;
-        if (Row2.Count == 0) fulde++;
-        if (Row3.Count == 0) fulde++;
-        return fulde;
+        int full = 0;
+        if (Row1.Count == 0) full++;
+        if (Row2.Count == 0) full++;
+        if (Row3.Count == 0) full++;
+        return full;
     }
 
     public string Status()
     {
-        int fulde = AntalFuldeRækker();
-        return fulde switch
+        int full = TotalFullRow();
+        return full switch
         {
             0 => "Ingen rækker fulde",
             1 => "1 række fuld!",
@@ -70,21 +70,21 @@ public class BankoRepository
         await command.ExecuteNonQueryAsync();
     }
 
-    public void TilføjPlade(BankoPlate plade)
+    public void AddPlates(BankoPlate plate)
     {
         using var conn = new NpgsqlConnection(_connectionString);
         conn.Open();
 
         using var cmd = new NpgsqlCommand(
             "INSERT INTO bankoplader (plade_id, raekke1, raekke2, raekke3) VALUES (@id, @r1, @r2, @r3)", conn);
-        cmd.Parameters.AddWithValue("id", plade.Id);
-        cmd.Parameters.AddWithValue("r1", plade.Row1.ToArray());
-        cmd.Parameters.AddWithValue("r2", plade.Row2.ToArray());
-        cmd.Parameters.AddWithValue("r3", plade.Row3.ToArray());
+        cmd.Parameters.AddWithValue("id", plate.Id);
+        cmd.Parameters.AddWithValue("r1", plate.Row1.ToArray());
+        cmd.Parameters.AddWithValue("r2", plate.Row2.ToArray());
+        cmd.Parameters.AddWithValue("r3", plate.Row3.ToArray());
         cmd.ExecuteNonQuery();
     }
 
-    public List<BankoPlate> HentAllePlader()
+    public List<BankoPlate> GetAllPlates()
     {
         var result = new List<BankoPlate>();
         using var conn = new NpgsqlConnection(_connectionString);
@@ -109,7 +109,7 @@ class Program
     static string connStr = Environment.GetEnvironmentVariable("neondb")
           ?? "Host=ep-jolly-thunder-a9dhgpfe-pooler.gwc.azure.neon.tech; Database=neondb; Username=neondb_owner; Password=npg_gdb7iuU4VPsO; SSL Mode=VerifyFull; Channel Binding=Require;";
     static BankoRepository repo = new BankoRepository(connStr);
-    static List<BankoPlate> aktivePlader = new List<BankoPlate>();
+    static List<BankoPlate> activePlates = new List<BankoPlate>();
 
     static void Main()
     {
@@ -125,13 +125,13 @@ class Program
             Console.WriteLine("4. Vis status");
             Console.WriteLine("0. Afslut");
             Console.Write("Vælg: ");
-            var valg = Console.ReadLine();
+            var choice = Console.ReadLine();
 
-            switch (valg)
+            switch (choice)
             {
                 case "1": AddPlate(); break;
                 case "2": GetPlates(); break;
-                case "3": MarkerTalLoop(); break;
+                case "3": CountNumberLoop(); break;
                 case "4": ShowStatus(); break;
                 case "0": return;
             }
@@ -152,21 +152,21 @@ class Program
         Console.WriteLine("Indtast 5 tal for række 3: ");
         var r3 = Console.ReadLine().Split(',').Select(int.Parse).ToList();
 
-        var plade = new BankoPlate(id, r1, r2, r3);
-        repo.TilføjPlade(plade);
-        aktivePlader.Add(plade);
+        var plate = new BankoPlate(id, r1, r2, r3);
+        repo.AddPlates(plate);
+        activePlates.Add(plate);
         Console.WriteLine("Plade tilføjet!");
         Console.ReadKey();
     }
 
     static void GetPlates()
     {
-        aktivePlader = repo.HentAllePlader();
-        Console.WriteLine($"Hentede {aktivePlader.Count} plader fra DB.");
+        activePlates = repo.GetAllPlates();
+        Console.WriteLine($"Hentede {activePlates.Count} plader fra DB.");
         Console.ReadKey();
     }
 
-    static void MarkerTalLoop()
+    static void CountNumberLoop()
     {
         Console.WriteLine("Indtast trukne tal (skriv 'stop' for at afslutte):");
 
@@ -178,28 +178,28 @@ class Program
             if (input.ToLower() == "stop")
                 break;
 
-            if (!int.TryParse(input, out int tal))
+            if (!int.TryParse(input, out int number))
             {
                 Console.WriteLine("Ugyldigt tal, prøv igen.");
                 continue;
             }
 
-            foreach (var plade in aktivePlader)
+            foreach (var plate in activePlates)
             {
-                int før = plade.AntalFuldeRækker();
-                plade.MarkerTal(tal);
-                int efter = plade.AntalFuldeRækker();
+                int before = plate.TotalFullRow();
+                plate.CountNumbers(number);
+                int after = plate.TotalFullRow();
 
-                if (efter > før)
+                if (after > before)
                 {
-                    if (efter == 1)
+                    if (after == 1)
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                    else if (efter == 2)
+                    else if (after == 2)
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    else if (efter == 3)
+                    else if (after == 3)
                         Console.ForegroundColor = ConsoleColor.Green;
 
-                    Console.WriteLine($"Plade '{plade.Id}' har nu: {plade.Status()}");
+                    Console.WriteLine($"Plade '{plate.Id}' har nu: {plate.Status()}");
                     Console.ResetColor();
                 }
             }
@@ -208,9 +208,9 @@ class Program
 
     static void ShowStatus()
     {
-        foreach (var plade in aktivePlader)
+        foreach (var plate in activePlates)
         {
-            Console.WriteLine($"{plade.Id}: {plade.Status()}");
+            Console.WriteLine($"{plate.Id}: {plate.Status()}");
         }
         Console.ReadKey();
     }
